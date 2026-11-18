@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Chimera Rift — A revolutionary 2D monster-taming RPG with dual-essence creatures, mid-battle fusion, and terrain morphing." />
+  <title>Chimera Rift</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-bqqf3Vim.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-3FP4F7_2.css">
+</head>
+<body>
+  <div id="game-wrapper">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Title Screen Overlay -->
+    <div id="title-screen">
+      <div class="title-content">
+        <div class="title-logo">
+          <h1 class="title-main">CHIMERA</h1>
+          <h2 class="title-sub">R I F T</h2>
+        </div>
+        <div class="title-prism"></div>
+        <p class="title-tagline">Where worlds collide, legends are born.</p>
+        <div class="title-menu" id="title-menu">
+          <button class="title-btn" id="btn-new-game">New Game</button>
+          <button class="title-btn" id="btn-continue" disabled>Continue</button>
+          <button class="title-btn" id="btn-settings">Settings</button>
+        </div>
+        <p class="title-press">Press ENTER or click to start</p>
+      </div>
+      <div class="title-particles" id="title-particles"></div>
+    </div>
+
+    <!-- Battle HUD (hidden until battle) -->
+    <div id="battle-hud" class="hidden">
+      <div id="battle-bg"></div>
+      <div id="enemy-info" class="battle-info-panel">
+        <span class="chimera-name" id="enemy-name">???</span>
+        <span class="chimera-level" id="enemy-level">Lv 5</span>
+        <div class="chimera-essence-badges" id="enemy-essences"></div>
+        <div class="hp-bar-container">
+          <div class="hp-bar" id="enemy-hp-bar"></div>
+        </div>
+        <span class="hp-text" id="enemy-hp-text">HP</span>
+      </div>
+      <div id="player-info" class="battle-info-panel player-panel">
+        <span class="chimera-name" id="player-chimera-name">???</span>
+        <span class="chimera-level" id="player-chimera-level">Lv 5</span>
+        <div class="chimera-essence-badges" id="player-essences"></div>
+        <div class="hp-bar-container">
+          <div class="hp-bar" id="player-hp-bar"></div>
+        </div>
+        <span class="hp-text" id="player-hp-text">HP</span>
+        <div class="xp-bar-container">
+          <div class="xp-bar" id="player-xp-bar"></div>
+        </div>
+        <div class="bond-indicator" id="bond-indicator">
+          <span class="bond-heart">♥</span>
+          <span class="bond-value" id="bond-value">50%</span>
+        </div>
+      </div>
+      <div id="battle-sprites">
+        <canvas id="player-sprite-canvas" width="128" height="128"></canvas>
+        <canvas id="enemy-sprite-canvas" width="128" height="128"></canvas>
+      </div>
+      <div id="terrain-indicator" class="hidden">
+        <span id="terrain-name">Scorched Earth</span>
+        <span id="terrain-turns">5 turns</span>
+      </div>
+    </div>
+
+    <!-- Battle Menu -->
+    <div id="battle-menu" class="hidden">
+      <div id="battle-text-box">
+        <p id="battle-text">What will you do?</p>
+      </div>
+      <div id="battle-actions">
+        <button class="battle-action-btn" id="btn-fight" data-action="fight">
+          <span class="action-icon">⚔</span> Fight
+        </button>
+        <button class="battle-action-btn" id="btn-bag" data-action="bag">
+          <span class="action-icon">🎒</span> Bag
+        </button>
+        <button class="battle-action-btn" id="btn-chimera" data-action="chimera">
+          <span class="action-icon">🐾</span> Chimera
+        </button>
+        <button class="battle-action-btn" id="btn-fuse" data-action="fuse">
+          <span class="action-icon">⚡</span> Fuse
+        </button>
+        <button class="battle-action-btn" id="btn-run" data-action="run">
+          <span class="action-icon">💨</span> Run
+        </button>
+      </div>
+      <div id="move-select" class="hidden">
+        <div class="move-grid" id="move-grid"></div>
+        <button class="back-btn" id="btn-move-back">← Back</button>
+      </div>
+    </div>
+
+    <!-- Overworld HUD -->
+    <div id="overworld-hud" class="hidden">
+      <div id="party-bar">
+        <div class="party-slot" id="party-slot-0"></div>
+        <div class="party-slot" id="party-slot-1"></div>
+        <div class="party-slot" id="party-slot-2"></div>
+        <div class="party-slot" id="party-slot-3"></div>
+        <div class="party-slot" id="party-slot-4"></div>
+        <div class="party-slot" id="party-slot-5"></div>
+      </div>
+      <div id="location-banner" class="hidden">
+        <span id="location-name">Prism Town</span>
+      </div>
+      <div id="minimap-container">
+        <canvas id="minimap" width="120" height="120"></canvas>
+      </div>
+    </div>
+
+    <!-- Dialog Box -->
+    <div id="dialog-box" class="hidden">
+      <div class="dialog-portrait" id="dialog-portrait"></div>
+      <div class="dialog-content">
+        <span class="dialog-speaker" id="dialog-speaker">???</span>
+        <p class="dialog-text" id="dialog-text"></p>
+      </div>
+      <span class="dialog-continue">▼</span>
+    </div>
+
+    <!-- In-Game Menu -->
+    <div id="in-game-menu" class="hidden">
+      <div class="menu-container">
+        <div class="menu-sidebar">
+          <h2 class="menu-title">Menu</h2>
+          <button class="menu-btn" id="btn-menu-party">Party</button>
+          <button class="menu-btn" id="btn-menu-inventory">Inventory</button>
+          <button class="menu-btn" id="btn-menu-codex">Codex</button>
+          <button class="menu-btn" id="btn-menu-save">Save</button>
+          <button class="menu-btn" id="btn-menu-settings">Settings</button>
+          <button class="menu-btn" id="btn-menu-close">Close</button>
+        </div>
+        <div class="menu-main-content">
+          <div class="menu-placeholder-text">Select an option.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transition Overlay -->
+    <div id="transition-overlay"></div>
+
+    <!-- Notification Toast -->
+    <div id="notification-area"></div>
+  </div>
+
+</body>
+</html>
